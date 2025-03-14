@@ -1,0 +1,291 @@
+/* General Styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Navbar Styles */
+.navbar {
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar .menu {
+  display: flex;
+  gap: 20px;
+}
+
+.navbar .menu div {
+  cursor: pointer;
+}
+
+/* Layout Styles */
+.container {
+  display: flex;
+  flex: 1;
+  gap: 10px; /* Add gap between sections */
+  padding: 10px; /* Add padding around the container */
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 25vw;
+  background-color: #f4f4f4;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar .item {
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.sidebar .item.active {
+  font-weight: bold;
+  color: white;
+}
+
+.sidebar .item.blue {
+  background-color: blue;
+}
+
+.sidebar .item.green {
+  background-color: green;
+}
+
+.sidebar .item.yellow {
+  background-color: yellow;
+}
+
+/* Main Body Styles */
+.main-content {
+  width: 50vw;
+  background-color: #fff;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-body {
+  flex: 1;
+  padding: 20px;
+  display: none;
+}
+
+.main-body.active {
+  display: block;
+}
+
+/* Grid Styles */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.grid .item {
+  background-size: cover;
+  background-position: center;
+  border-radius: 5px;
+  padding: 10px;
+  color: white;
+  text-shadow: 1px 1px 2px black;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 150px;
+}
+
+/* Search Bar Styles */
+.search-bar {
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  width: 100%; /* Take full width of the parent */
+  max-width: 100%; /* Ensure it doesn't exceed the parent's width */
+  padding: 10px;
+  font-size: 16px;
+  box-sizing: border-box; /* Include padding in the element's width */
+}
+/* Right Bar Styles */
+.right-bar {
+  width: 25vw;
+  background-color: #f9f9f9;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#right-bar-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+}
+
+#default-message {
+  font-size: 18px;
+  color: #777;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.right-bar-image {
+  width: 20vw;
+  height: 45vh;
+  background-size: cover;
+  background-position: center;
+  border-radius: 5px;
+  display: none;
+}
+
+.right-bar-name,
+.right-bar-price {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  display: none;
+}
+
+.quantity-controls {
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-controls button {
+  padding: 5px 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.total-price {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0;
+  display: none;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  display: none;
+}
+
+.action-buttons button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  width: 100%;
+}
+
+.action-buttons button:hover {
+  background-color: #0056b3;
+}
+
+.right-bar.item-selected #default-message {
+  display: none;
+}
+
+.right-bar.item-selected .right-bar-image,
+.right-bar.item-selected .right-bar-name,
+.right-bar.item-selected .right-bar-price,
+.right-bar.item-selected .quantity-controls,
+.right-bar.item-selected .total-price,
+.right-bar.item-selected .action-buttons {
+  display: flex;
+}
+
+.login-container {
+  background-color: rgb(255, 255, 255);
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  width: 320px;
+}
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #6e3030;
+}
+.input-container {
+  position: relative;
+  width: 100%;
+}
+.login-container input[type="text"],
+.login-container input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid #000000;
+  border-radius: 6px;
+  outline: none;
+  box-sizing: border-box;
+}
+.login-container input:focus {
+  border-color: #000000;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+.eye-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+.login-container button {
+  width: 100%;
+  padding: 10px;
+  background-color: #fffb00;
+  border: none;
+  border-radius: 4px;
+  color: rgb(29, 28, 28);
+  font-size: 16px;
+  cursor: pointer;
+}
+.login-container button:hover {
+  background-color: #000000;
+  color: white;
+}
+.login-container .message {
+  text-align: center;
+  color: red;
+  margin-top: 10px;
+  font-weight: bold;
+}
+.login-container .forgot-password,
+.login-container .signup {
+  text-align: center;
+  margin-top: 10px;
+}
+.login-container .forgot-password a,
+.login-container .signup a {
+  color: #e94242;
+  text-decoration: none;
+}
+.login-container .forgot-password a:hover,
+.login-container .signup a:hover {
+  text-decoration: underline;
+}

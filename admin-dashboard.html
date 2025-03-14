@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <div class="navbar">
+      <div>Admin Dashboard</div>
+      <div class="menu">
+        <div>Menu</div>
+        <div>Profile</div>
+        <div>Order</div>
+      </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="item blue active" data-body="blue-body">Blue</div>
+        <div class="item green" data-body="green-body">Green</div>
+        <div class="item yellow" data-body="yellow-body">Yellow</div>
+      </div>
+
+      <!-- Main Body -->
+      <div class="main-content">
+        <div class="search-bar">
+          <input type="text" placeholder="Search..." />
+        </div>
+        <div id="blue-body" class="main-body active">
+          <div class="grid" id="blue-grid"></div>
+        </div>
+        <div id="green-body" class="main-body">
+          <div class="grid" id="green-grid"></div>
+        </div>
+        <div id="yellow-body" class="main-body">
+          <div class="grid" id="yellow-grid"></div>
+        </div>
+      </div>
+
+      <!-- Right Bar -->
+      <!-- Right Bar -->
+      <div class="right-bar">
+        <div id="right-bar-content">
+          <div id="default-message">Please select an item first</div>
+          <div class="right-bar-image"></div>
+          <div class="right-bar-name"></div>
+          <div class="right-bar-price"></div>
+          <div class="quantity-controls">
+            <button id="decrease-quantity">-</button>
+            <span id="quantity">1</span>
+            <button id="increase-quantity">+</button>
+          </div>
+          <div class="total-price">
+            <span>Total: </span>
+            <span id="total-price">₱0.00</span>
+          </div>
+          <div class="action-buttons">
+            <button id="add-to-cart">Add to Cart</button>
+            <button id="order-now">Order Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
