@@ -7,7 +7,6 @@ body {
   height: 100vh;
 }
 
-/* Navbar Styles */
 .navbar {
   background-color: #333;
   color: white;
@@ -21,10 +20,13 @@ body {
 .navbar .menu {
   display: flex;
   gap: 20px;
+  align-items: center; /* Vertically center the menu items */
 }
 
-.navbar .menu div {
+.navbar .menu div, .navbar .menu a {
   cursor: pointer;
+  display: flex;
+  align-items: center; /* Vertically center text within each item */
 }
 
 /* Layout Styles */
@@ -37,33 +39,32 @@ body {
 
 /* Sidebar Styles */
 .sidebar {
-  width: 20vw;
+  width: 15vw; /* Reduced from 20vw to make the sidebar smaller */
   background-color: #f4f4f4;
-  padding: 50px;
+  padding: 30px; /* Reduced padding from 50px */
   display: flex;
   flex-direction: column;
   gap: 25px;
 }
-/* Sidebar Styles */
+
 .sidebar .item {
-  padding: 20px;
+  padding: 10px; /* Reduced padding from 20px */
   text-align: center;
   cursor: pointer;
   border-radius: 10px;
-  width: 80%; /* Adjust width as needed */
-  height: 220px; /* Adjust height as needed */
+  width: 85%; /* Slightly increased percentage to maintain proportions */
+  height: 180px; /* Reduced height from 220px */
   background-size: cover;
   background-position: center;
   color: white;
   font-weight: bold;
-  font-size: 24px; /* Increased font size */
+  font-size: 20px; /* Slightly reduced font size from 24px */
   display: flex;
   justify-content: center;
-  align-items: bottom;
+  align-items: flex-end; /* Changed from 'bottom' to 'flex-end' to position text at the bottom */
   text-shadow: 2px 2px 3px black;
-  padding-top: 0px;
+  padding-bottom: 15px; /* Add some padding at the bottom for the text */
 }
-
 
 .sidebar .item.active {
   font-weight: bold;
@@ -71,15 +72,15 @@ body {
 }
 
 .sidebar .item.blue {
-  background-image: url('images/paper.jpg'); /* Replace with the actual path to your image */
+  background-image: url("images/paper.jpg"); /* Replace with the actual path to your image */
 }
 
 .sidebar .item.green {
-  background-image: url('images/rock.jpg'); /* Replace with the actual path to your image */
+  background-image: url("images/rock.jpg"); /* Replace with the actual path to your image */
 }
 
 .sidebar .item.yellow {
-  background-image: url('images/scissor.jpg'); /* Replace with the actual path to your image */
+  background-image: url("images/scissor.jpg"); /* Replace with the actual path to your image */
 }
 /* Main Body Styles */
 .main-content {
@@ -171,11 +172,14 @@ body {
   border-radius: 5px;
   box-sizing: border-box;
 }
- 
+
 /* Search Results Styles */
 #search-results {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Adjust the number of columns as needed */
+  grid-template-columns: repeat(
+    4,
+    1fr
+  ); /* Adjust the number of columns as needed */
   gap: 10px;
   margin-top: 10px;
 }
@@ -234,7 +238,7 @@ body {
   height: 45vh;
   background-size: cover;
   background-position: center;
-  border-radius:5px;
+  border-radius: 5px;
   display: none;
 }
 
@@ -427,7 +431,6 @@ body {
   height: 33px; /* Set a fixed height */
   width: 30px; /* Set a fixed width for uniform size */
   text-align: center;
-
 }
 .add-on button.add-on-minus {
   align-self: flex-end; /* Align the minus button downward */
@@ -445,7 +448,6 @@ body {
   font-size: 35px;
   margin-bottom: 10px;
   margin-top: -5px;
-
 }
 
 .options label {
@@ -505,14 +507,16 @@ body {
   animation: zoomIn 0.8s ease-in-out;
 }
 
+
 .logout-button {
-  display: inline-block;
+  display: flex;
+  align-items: center;
   padding: 10px 20px;
   font-size: 18px;
   font-weight: bold;
   color: white;
   background-color: red;
-  border: 2px solid red; /* Red border */
+  border: 2px solid red;
   border-radius: 5px;
   text-decoration: none;
   cursor: pointer;
@@ -520,6 +524,6 @@ body {
 }
 
 .logout-button:hover {
-  background-color: darkred; /* Darker red on hover */
+  background-color: darkred;
   border-color: darkred;
 }

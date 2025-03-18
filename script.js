@@ -1,3 +1,12 @@
+document
+  .getElementById("logout-button")
+  .addEventListener("click", function (event) {
+    event.preventDefault();
+    const confirmLogout = confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      window.location.href = "index.html";
+    }
+  });
 
 // Populate Grids
 const populateGrid = (section, gridId) => {
@@ -31,7 +40,6 @@ const addClickAnimation = () => {
     });
   });
 };
-
 
 // Call the function after populating the grid
 populateGrid("blue", "blue-grid");
@@ -76,13 +84,12 @@ const displayInRightBar = (item) => {
   addOnsSection.style.display = "block";
   optionsSection.style.display = "block";
 
-
   // Update right bar content
   rightBarImage.style.backgroundImage = `url(${item.bgImage})`;
   rightBarName.textContent = item.name;
   rightBarPrice.textContent = item.price;
   quantityElement.textContent = "1"; // Reset quantity to 1
- // Store the selected item for calculations
+  // Store the selected item for calculations
   selectedItem = item;
   quantity = 1;
 };
@@ -170,7 +177,6 @@ document.getElementById("decrease-quantity").addEventListener("click", () => {
   }
 });
 
-
 // Action buttons
 document.getElementById("add-to-cart").addEventListener("click", () => {
   if (selectedItem) {
@@ -230,72 +236,72 @@ function checkLogin(event) {
     document.getElementById("message").innerText =
       "Invalid Username or Password!";
   }
-  
- // Function to filter items based on the search query
-const filterItems = (query) => {
-  return data.filter((item) =>
-    item.name.toLowerCase().includes(query.toLowerCase())
-  );
-};
 
-// Handle Search Bar Input
-const resultsBox = document.getElementById(".result-box");
-const inputBox = document.getElementById("input-box");
+  // Function to filter items based on the search query
+  const filterItems = (query) => {
+    return data.filter((item) =>
+      item.name.toLowerCase().includes(query.toLowerCase())
+    );
+  };
 
-resultsBox.addEventListener("input", (event) => {
-  const query = event.target.value.trim();
-  const filteredItems = filterItems(query);
-  let results = [];
-  let input = inputBox.value;
-  if (input.length){
-    result = availableItems.filter((item) => {
-      return item.toLowerCase.include(input.toLowerCase());
+  // Handle Search Bar Input
+  const resultsBox = document.getElementById(".result-box");
+  const inputBox = document.getElementById("input-box");
+
+  resultsBox.addEventListener("input", (event) => {
+    const query = event.target.value.trim();
+    const filteredItems = filterItems(query);
+    let results = [];
+    let input = inputBox.value;
+    if (input.length) {
+      result = availableItems.filter((item) => {
+        return item.toLowerCase.include(input.toLowerCase());
+      });
+    }
+    function displayResults(results) {
+      const html = results.map;
+    }
+
+    // Clear previous search results
+    searchResults.innerHTML = "";
+
+    if (query === "") {
+      searchResults.innerHTML = `<div class="no-results">Start typing to search...</div>`;
+      return;
+    }
+
+    if (filteredItems.length === 0) {
+      searchResults.innerHTML = `<div class="no-results">No results found</div>`;
+      return;
+    }
+
+    // Display filtered results
+    filteredItems.forEach((item) => {
+      const div = document.createElement("div");
+      div.className = "search-item";
+      div.style.backgroundImage = `url(${item.bgImage})`;
+      div.innerHTML = `<strong>${item.name}</strong><span>${item.price}</span>`;
+      div.addEventListener("click", () => {
+        displayInRightBar(item);
+      });
+      searchResults.appendChild(div);
     });
-  }
-  function displayResults(results) {
-    const html = results.map 
-  }
-
-  // Clear previous search results
-  searchResults.innerHTML = "";
-
-  if (query === "") {
-    searchResults.innerHTML = `<div class="no-results">Start typing to search...</div>`;
-    return;
-  }
-
-  if (filteredItems.length === 0) {
-    searchResults.innerHTML = `<div class="no-results">No results found</div>`;
-    return;
-  }
-
-  // Display filtered results
-  filteredItems.forEach((item) => {
-    const div = document.createElement("div");
-    div.className = "search-item";
-    div.style.backgroundImage = `url(${item.bgImage})`;
-    div.innerHTML = `<strong>${item.name}</strong><span>${item.price}</span>`;
-    div.addEventListener("click", () => {
-      displayInRightBar(item);
-    });
-    searchResults.appendChild(div);
   });
-});
 
-// Display item in the right bar
-const displayInRightBar = (item) => {
-  const rightBarImage = document.querySelector(".right-bar-image");
-  const rightBarName = document.querySelector(".right-bar-name");
-  const rightBarPrice = document.querySelector(".right-bar-price");
+  // Display item in the right bar
+  const displayInRightBar = (item) => {
+    const rightBarImage = document.querySelector(".right-bar-image");
+    const rightBarName = document.querySelector(".right-bar-name");
+    const rightBarPrice = document.querySelector(".right-bar-price");
 
-  // Update right bar content
-  rightBarImage.style.backgroundImage = `url(${item.bgImage})`;
-  rightBarName.textContent = item.name;
-  rightBarPrice.textContent = item.price;
+    // Update right bar content
+    rightBarImage.style.backgroundImage = `url(${item.bgImage})`;
+    rightBarName.textContent = item.name;
+    rightBarPrice.textContent = item.price;
 
-  // Show the right bar content
-  document.querySelector(".right-bar").classList.add("item-selected");
-};
+    // Show the right bar content
+    document.querySelector(".right-bar").classList.add("item-selected");
+  };
 }
 // Populate Grids for Classic and Premium Milktea
 populateGrid("classic-milktea", "classic-milktea-grid");
