@@ -8,23 +8,93 @@ document
     }
   });
 
+let searchTerm = "";
+
 // Populate Grids
-const populateGrid = (section, gridId) => {
-  const grid = document.getElementById(gridId);
-  const items = data.filter((item) => item.section === section);
-  items.forEach((item) => {
-    const div = document.createElement("div");
-    div.className = "item";
-    div.style.backgroundImage = `url(${item.bgImage})`;
-    div.innerHTML = `<strong>${item.name}</strong><span>${item.price}</span>`;
-    div.addEventListener("click", () => {
-      displayInRightBar(item);
-      document.querySelector(".right-bar").classList.add("item-selected");
-      updateTotalPrice(item);
+const populateGrid = (section, bodyId) => {
+  console.log(`Populating ${section} grid with search term: "${searchTerm}"`);
+  const bodyElement = document.getElementById(bodyId);
+
+  // Clear any existing content
+  bodyElement.innerHTML = "";
+
+  // Get all items for this section
+  let sectionItems = data.filter((item) => item.section === section);
+  console.log(data);
+
+  // Apply search filter if there is a search term
+  if (searchTerm) {
+    console.log(`Filtering ${sectionItems.length} items by search term`);
+    sectionItems = sectionItems.filter((item) =>
+      item.name.toLowerCase().includes(searchTerm)
+    );
+    console.log(`After filtering: ${sectionItems.length} items remain`);
+    console.log(searchTerm);
+  }
+
+  // If no items match the search, show a no results message
+  if (sectionItems.length === 0) {
+    const noResults = document.createElement("div");
+    noResults.className = "no-results-message";
+    noResults.textContent = `No items found in this section for "${searchTerm}"`;
+    bodyElement.appendChild(noResults);
+    return;
+  }
+
+  // Get unique subsections
+  const subsections = [...new Set(sectionItems.map((item) => item.subSection))];
+  console.log(`Found ${subsections.length} subsections for ${section}`);
+
+  // For each subsection, create a grid
+  subsections.forEach((subsection) => {
+    // Get items for this subsection, already filtered by search term
+    const subsectionItems = sectionItems.filter(
+      (item) => item.subSection === subsection
+    );
+
+    // Skip empty subsections
+    if (subsectionItems.length === 0) {
+      console.log(`Skipping empty subsection: ${subsection}`);
+      return;
+    }
+
+    // Create subsection container
+    const subsectionContainer = document.createElement("div");
+    subsectionContainer.className = "subsection-container";
+
+    // Create subsection header
+    const subsectionHeader = document.createElement("h2");
+    subsectionHeader.className = "subsection-header";
+    subsectionHeader.textContent =
+      subsection.charAt(0).toUpperCase() + subsection.slice(1); // Capitalize first letter
+    subsectionContainer.appendChild(subsectionHeader);
+
+    // Create grid for this subsection
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    grid.id = `${section}-${subsection}-grid`;
+    subsectionContainer.appendChild(grid);
+
+    // Append the subsection container to the body
+    bodyElement.appendChild(subsectionContainer);
+
+    // Populate the grid with items
+    console.log(`Adding ${subsectionItems.length} items to ${subsection} grid`);
+    subsectionItems.forEach((item) => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.style.backgroundImage = `url(${item.bgImage})`;
+      div.innerHTML = `<strong>${item.name}</strong><span>${item.price}</span>`;
+      div.addEventListener("click", () => {
+        displayInRightBar(item);
+        document.querySelector(".right-bar").classList.add("item-selected");
+        updateTotalPrice(item);
+      });
+      grid.appendChild(div);
     });
-    grid.appendChild(div);
   });
 };
+
 const addClickAnimation = () => {
   const gridItems = document.querySelectorAll(".grid .item");
 
@@ -41,17 +111,19 @@ const addClickAnimation = () => {
   });
 };
 
-// Call the function after populating the grid
-populateGrid("blue", "blue-grid");
-populateGrid("violet", "violet-grid");
-populateGrid("green", "green-grid");
-populateGrid("yellow", "yellow-grid");
+// Update the initial call to populateGrid
+populateGrid("blue", "blue-body");
+populateGrid("violet", "violet-body");
+populateGrid("green", "green-body");
+populateGrid("yellow", "yellow-body");
+// Call the function after populating grids
 addClickAnimation();
 
 // Sidebar Toggle
 const sidebarItems = document.querySelectorAll(".sidebar .item");
 const bodies = document.querySelectorAll(".main-body");
 
+// Sidebar Toggle
 sidebarItems.forEach((item) => {
   item.addEventListener("click", () => {
     // Remove active class from all items and bodies
@@ -62,6 +134,18 @@ sidebarItems.forEach((item) => {
     item.classList.add("active");
     const bodyId = item.getAttribute("data-body");
     document.getElementById(bodyId).classList.add("active");
+
+    // Clear the search term when switching tabs
+    searchTerm = "";
+    if (document.getElementById("search-bar")) {
+      document.getElementById("search-bar").value = "";
+    }
+
+    // Re-populate all grids with unfiltered data
+    populateGrid("blue", "blue-body");
+    populateGrid("violet", "violet-body");
+    populateGrid("green", "green-body");
+    populateGrid("yellow", "yellow-body");
   });
 });
 
@@ -177,22 +261,57 @@ document.getElementById("decrease-quantity").addEventListener("click", () => {
   }
 });
 
-// Action buttons
-document.getElementById("add-to-cart").addEventListener("click", () => {
+
+document.getElementById("order-now").addEventListener("click", () => {
   if (selectedItem) {
-    alert(`${quantity} ${selectedItem.name}(s) added to cart!`);
+    // Gather add-ons information
+    let addOnsMessage = [];
+    for (const [addOn, count] of Object.entries(addOnCounts)) {
+      if (count > 0) {
+        // Format add-on name to be more readable
+        const formattedName = addOn
+          .split("-")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+        addOnsMessage.push(`${count} ${formattedName}`);
+      }
+    }
+
+    // Get options information
+    const lessIce = document.getElementById("less-ice").checked;
+    const dineOption = document.querySelector(
+      'input[name="dine-option"]:checked'
+    )?.value;
+
+    // Build the complete order message
+    let orderMessage = `Order placed for ${quantity} ${selectedItem.name}(s)!\n`;
+
+    // Add add-ons if any were selected
+    if (addOnsMessage.length > 0) {
+      orderMessage += `\nWith add-ons:\n- ${addOnsMessage.join("\n- ")}`;
+    }
+
+    // Add options if selected
+    if (lessIce || dineOption) {
+      orderMessage += "\n\nOptions:";
+      if (lessIce) orderMessage += "\n- Less Ice";
+      if (dineOption)
+        orderMessage += `\n- ${
+          dineOption === "dine-in" ? "Dine In" : "Take Out"
+        }`;
+    }
+
+    // Show total price
+    const totalPrice = document.getElementById("total-price").textContent;
+    orderMessage += `\n\nTotal: ${totalPrice}`;
+
+    alert(orderMessage);
   } else {
     alert("Please select an item first!");
   }
 });
 
-document.getElementById("order-now").addEventListener("click", () => {
-  if (selectedItem) {
-    alert(`Order placed for ${quantity} ${selectedItem.name}(s)!`);
-  } else {
-    alert("Please select an item first!");
-  }
-});
+// ...existing code...
 
 function togglePassword() {
   let passwordField = document.getElementById("password");
@@ -236,90 +355,24 @@ function checkLogin(event) {
     document.getElementById("message").innerText =
       "Invalid Username or Password!";
   }
+}
 
-  // Function to filter items based on the search query
-  const filterItems = (query) => {
-    return data.filter((item) =>
-      item.name.toLowerCase().includes(query.toLowerCase())
-    );
-  };
+// Now set up the search event listener in the DOMContentLoaded event
+document.addEventListener("DOMContentLoaded", function () {
+  const searchBar = document.getElementById("search-bar");
 
-  // Handle Search Bar Input
-  const resultsBox = document.getElementById(".result-box");
-  const inputBox = document.getElementById("input-box");
+  // Search functionality that re-triggers grid population
+  searchBar.addEventListener("input", function () {
+    searchTerm = searchBar.value.trim().toLowerCase();
+    console.log("Search term updated:", searchTerm);
 
-  resultsBox.addEventListener("input", (event) => {
-    const query = event.target.value.trim();
-    const filteredItems = filterItems(query);
-    let results = [];
-    let input = inputBox.value;
-    if (input.length) {
-      result = availableItems.filter((item) => {
-        return item.toLowerCase.include(input.toLowerCase());
-      });
-    }
-    function displayResults(results) {
-      const html = results.map;
-    }
+    // Re-populate all grids with filtered data
+    populateGrid("blue", "blue-body");
+    populateGrid("violet", "violet-body");
+    populateGrid("green", "green-body");
+    populateGrid("yellow", "yellow-body");
 
-    // Clear previous search results
-    searchResults.innerHTML = "";
-
-    if (query === "") {
-      searchResults.innerHTML = `<div class="no-results">Start typing to search...</div>`;
-      return;
-    }
-
-    if (filteredItems.length === 0) {
-      searchResults.innerHTML = `<div class="no-results">No results found</div>`;
-      return;
-    }
-
-    // Display filtered results
-    filteredItems.forEach((item) => {
-      const div = document.createElement("div");
-      div.className = "search-item";
-      div.style.backgroundImage = `url(${item.bgImage})`;
-      div.innerHTML = `<strong>${item.name}</strong><span>${item.price}</span>`;
-      div.addEventListener("click", () => {
-        displayInRightBar(item);
-      });
-      searchResults.appendChild(div);
-    });
+    // Re-add click animations
+    addClickAnimation();
   });
-
-  // Display item in the right bar
-  const displayInRightBar = (item) => {
-    const rightBarImage = document.querySelector(".right-bar-image");
-    const rightBarName = document.querySelector(".right-bar-name");
-    const rightBarPrice = document.querySelector(".right-bar-price");
-
-    // Update right bar content
-    rightBarImage.style.backgroundImage = `url(${item.bgImage})`;
-    rightBarName.textContent = item.name;
-    rightBarPrice.textContent = item.price;
-
-    // Show the right bar content
-    document.querySelector(".right-bar").classList.add("item-selected");
-  };
-}
-// Populate Grids for Classic and Premium Milktea
-populateGrid("classic-milktea", "classic-milktea-grid");
-populateGrid("premium-milktea", "premium-milktea-grid");
-
-// Logout Functionality
-function handleLogout() {
-  // Redirect to the login page
-  window.location.href = "index.html";
-}
-
-// Attach the logout function to the logout button
-document.addEventListener("DOMContentLoaded", () => {
-  const logoutButton = document.getElementById("logout-button");
-  if (logoutButton) {
-    logoutButton.addEventListener("click", (event) => {
-      event.preventDefault(); // Prevent default link behavior
-      handleLogout(); // Call the logout function
-    });
-  }
 });

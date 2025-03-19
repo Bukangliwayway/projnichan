@@ -28,21 +28,21 @@
 
       <!-- Main Body -->
       <div class="main-content">
-        <div class="search-bar">
+        <div class="search-bar" id="result-box">
           <input type="text" id="search-bar" placeholder="Search items..." />
         </div>
         <div id="search-results" class="search-results"></div>
         <div id="blue-body" class="main-body active">
-          <div class="grid" id="blue-grid"></div>
+          <!-- Subsection grids will be dynamically created here -->
         </div>
         <div id="green-body" class="main-body">
-          <div class="grid" id="green-grid"></div>
+          <!-- Subsection grids will be dynamically created here -->
         </div>
         <div id="yellow-body" class="main-body">
-          <div class="grid" id="yellow-grid"></div>
+          <!-- Subsection grids will be dynamically created here -->
         </div>
         <div id="violet-body" class="main-body">
-          <div class="grid" id="violet-grid"></div>
+          <!-- Subsection grids will be dynamically created here -->
         </div>
       </div>
       <!-- Right Bar -->
@@ -97,6 +97,8 @@
               <input type="checkbox" id="less-ice" />
               Less Ice
             </label>
+            <br />
+            <br />
             <label>
               <input type="radio" name="dine-option" value="dine-in" />
               Dine In
