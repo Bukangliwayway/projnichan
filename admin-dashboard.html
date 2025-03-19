@@ -13,24 +13,26 @@
       <div class="menu">
         <div>Menu</div>
         <div>Profile</div>
-        <div>Logout</div>
+        <a id="logout-button" class="logout-button" href="#">Logout</a>
+      </div>
       </div>
     </div>
-
     <!-- Main Container -->
     <div class="container">
       <!-- Sidebar -->
       <div class="sidebar">
-        <div class="item blue active" data-body="blue-body">Paper</div>
-        <div class="item green" data-body="green-body">Rock</div>
-        <div class="item yellow" data-body="yellow-body">Scissor</div>
+        <div class="item blue active" data-body="blue-body">Milktea</div> 
+        <div class="item blue active" data-body="violet-body">Premium Milktea</div> 
+        <div class="item green" data-body="green-body">Iced Coffee</div>
+        <div class="item yellow" data-body="yellow-body">Frappe</div>
       </div>
 
       <!-- Main Body -->
       <div class="main-content">
         <div class="search-bar">
-          <input type="text" placeholder="Search..." />
+          <input type="text" id="search-bar" placeholder="Search items..." />
         </div>
+        <div id="search-results" class="search-results"></div>
         <div id="blue-body" class="main-body active">
           <div class="grid" id="blue-grid"></div>
         </div>
@@ -40,8 +42,12 @@
         <div id="yellow-body" class="main-body">
           <div class="grid" id="yellow-grid"></div>
         </div>
+        <div id="violet-body" class="main-body">
+          <div class="grid" id="violet-grid"></div>
+          
+        </div>
       </div>
-
+      <div 
       <!-- Right Bar -->
       <!-- Right Bar -->
       <div class="right-bar">
@@ -55,18 +61,62 @@
             <span id="quantity">1</span>
             <button id="increase-quantity">+</button>
           </div>
+      
+          <!-- Add-Ons Section -->
+          <div class="add-ons">
+            <h3>Add-Ons</h3>
+            <div class="add-on">
+              <span>Pearl</span>
+              <button class="add-on-decrease" data-add-on="pearl">-</button>
+              <span id="pearl-count">0</span>
+              <button class="add-on-increase" data-add-on="pearl">+</button>
+            </div>
+            <div class="add-on">
+              <span>Nata</span>
+              <button class="add-on-decrease" data-add-on="nata">-</button>
+              <span id="nata-count">0</span>
+              <button class="add-on-increase" data-add-on="nata">+</button>
+            </div>
+            <div class="add-on">
+              <span>Coffee Jelly</span>
+              <button class="add-on-decrease" data-add-on="coffee-jelly">-</button>
+              <span id="coffee-jelly-count">0</span>
+              <button class="add-on-increase" data-add-on="coffee-jelly">+</button>
+            </div>
+            <div class="add-on">
+              <span>Espresso</span>
+              <button class="add-on-decrease" data-add-on="espresso">-</button>
+              <span id="espresso-count">0</span>
+              <button class="add-on-increase" data-add-on="espresso">+</button>
+            </div>
+          </div>
+          <!-- Options Section -->
+    <div class="options">
+      <h3>Options</h3>
+      <label>
+        <input type="checkbox" id="less-ice" />
+        Less Ice
+      </label>
+      <label>
+        <input type="radio" name="dine-option" value="dine-in" />
+        Dine In
+      </label>
+      <label>
+        <input type="radio" name="dine-option" value="take-out" />
+        Take Out
+      </label>
+    </div>
+
+      
           <div class="total-price">
             <span>Total: </span>
             <span id="total-price">₱0.00</span>
           </div>
           <div class="action-buttons">
-            <button id="add-to-cart">Add to Cart</button>
             <button id="order-now">Order Now</button>
           </div>
         </div>
       </div>
-    </div>
-
     <script src="data.js"></script>
     <script src="script.js"></script>
   </body>
