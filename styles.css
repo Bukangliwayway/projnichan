@@ -40,7 +40,7 @@ body {
 
 /* Sidebar Styles */
 .sidebar {
-  width: 15vw; /* Reduced from 20vw to make the sidebar smaller */
+  width: 10vw; /* Reduced from 20vw to make the sidebar smaller */
   background-color: #f4f4f4;
   padding: 30px; /* Reduced padding from 50px */
   display: flex;
@@ -59,7 +59,7 @@ body {
   background-position: center;
   color: white;
   font-weight: bold;
-  font-size: 20px; /* Slightly reduced font size from 24px */
+  font-size: 24px; /* Slightly reduced font size from 24px */
   display: flex;
   justify-content: center;
   align-items: flex-end; /* Changed from 'bottom' to 'flex-end' to position text at the bottom */
@@ -82,6 +82,9 @@ body {
 
 .sidebar .item.yellow {
   background-image: url("images/scissor.jpg"); /* Replace with the actual path to your image */
+}
+.sidebar .item.violet {
+  background-image: url("images/rat.jpg"); /* Replace with the actual path to your image */
 }
 /* Main Body Styles */
 .main-content {
@@ -605,3 +608,14 @@ body {
   background-color: darkred;
   border-color: darkred;
 }
+/* Subsection Header Styles */
+.subsection-header {
+  font-size: 36px; /* Increase the font size */
+  font-weight: bold; /* Make the text bold */
+  margin-bottom: 20px; /* Add space below the header */
+  padding: 10px; /* Add padding around the text */
+  text-align: left; /* Align the text to the left */
+  color: #333; /* Set a darker color for better readability */
+  border-bottom: 2px solid #ccc; /* Optional: Add a bottom border for separation */
+}
+

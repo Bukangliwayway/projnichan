@@ -20,16 +20,12 @@ const populateGrid = (section, bodyId) => {
 
   // Get all items for this section
   let sectionItems = data.filter((item) => item.section === section);
-  console.log(data);
 
   // Apply search filter if there is a search term
   if (searchTerm) {
-    console.log(`Filtering ${sectionItems.length} items by search term`);
     sectionItems = sectionItems.filter((item) =>
       item.name.toLowerCase().includes(searchTerm)
     );
-    console.log(`After filtering: ${sectionItems.length} items remain`);
-    console.log(searchTerm);
   }
 
   // If no items match the search, show a no results message
@@ -43,20 +39,15 @@ const populateGrid = (section, bodyId) => {
 
   // Get unique subsections
   const subsections = [...new Set(sectionItems.map((item) => item.subSection))];
-  console.log(`Found ${subsections.length} subsections for ${section}`);
 
   // For each subsection, create a grid
   subsections.forEach((subsection) => {
-    // Get items for this subsection, already filtered by search term
     const subsectionItems = sectionItems.filter(
       (item) => item.subSection === subsection
     );
 
     // Skip empty subsections
-    if (subsectionItems.length === 0) {
-      console.log(`Skipping empty subsection: ${subsection}`);
-      return;
-    }
+    if (subsectionItems.length === 0) return;
 
     // Create subsection container
     const subsectionContainer = document.createElement("div");
@@ -66,7 +57,7 @@ const populateGrid = (section, bodyId) => {
     const subsectionHeader = document.createElement("h2");
     subsectionHeader.className = "subsection-header";
     subsectionHeader.textContent =
-      subsection.charAt(0).toUpperCase() + subsection.slice(1); // Capitalize first letter
+      subsection.charAt(0).toUpperCase() + subsection.slice(1);
     subsectionContainer.appendChild(subsectionHeader);
 
     // Create grid for this subsection
@@ -79,7 +70,6 @@ const populateGrid = (section, bodyId) => {
     bodyElement.appendChild(subsectionContainer);
 
     // Populate the grid with items
-    console.log(`Adding ${subsectionItems.length} items to ${subsection} grid`);
     subsectionItems.forEach((item) => {
       const div = document.createElement("div");
       div.className = "item";
@@ -93,6 +83,9 @@ const populateGrid = (section, bodyId) => {
       grid.appendChild(div);
     });
   });
+
+  // Add click animations to the newly created grid items
+  addClickAnimation();
 };
 
 const addClickAnimation = () => {
@@ -364,14 +357,13 @@ document.addEventListener("DOMContentLoaded", function () {
   // Search functionality that re-triggers grid population
   searchBar.addEventListener("input", function () {
     searchTerm = searchBar.value.trim().toLowerCase();
-    console.log("Search term updated:", searchTerm);
-
+  
     // Re-populate all grids with filtered data
     populateGrid("blue", "blue-body");
     populateGrid("violet", "violet-body");
     populateGrid("green", "green-body");
     populateGrid("yellow", "yellow-body");
-
+  
     // Re-add click animations
     addClickAnimation();
   });
