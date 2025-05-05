@@ -368,3 +368,151 @@ document.addEventListener("DOMContentLoaded", function () {
     addClickAnimation();
   });
 });
+
+// Global cart array to store items
+const cart = [];
+const cartItemsContainer = document.getElementById("cart-items");
+const cartTotalPrice = document.getElementById("cart-total-price");
+
+// Add to Cart Button Functionality
+document.getElementById("add-to-cart").addEventListener("click", () => {
+  if (!selectedItem) {
+    alert("Please select an item first!");
+    return;
+  }
+
+  const itemName = selectedItem.name;
+  const itemPrice = parseFloat(selectedItem.price.replace("₱", ""));
+  const itemImage = selectedItem.image; // Get the image URL from the selected item
+  const quantity = parseInt(document.getElementById("quantity").textContent);
+
+  // Check if the item already exists in the cart
+  const existingItem = cart.find((item) => item.name === itemName);
+  if (existingItem) {
+    existingItem.quantity += quantity; // Update quantity if item exists
+  } else {
+    cart.push({ name: itemName, price: itemPrice, image: itemImage, quantity }); // Add new item to cart
+  }
+
+  updateCart(); // Update the cart display
+});
+
+// Update Cart Display
+function updateCart() {
+  cartItemsContainer.innerHTML = ""; // Clear existing cart items
+  let total = 0;
+
+  // Check if the cart is empty
+  if (cart.length === 0) {
+    cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
+    cartTotalPrice.textContent = "₱0.00";
+    return;
+  }
+
+  // Loop through the cart items and create HTML for each item
+  cart.forEach((item, index) => {
+    total += item.price * item.quantity;
+
+    const cartListItem = document.createElement("div");
+    cartListItem.classList.add("cart-list-item");
+    cartListItem.innerHTML = `
+      <div class="cart-item-image">
+        <img src="${item.image}" alt="${item.name}" />
+      </div>
+      <div class="cart-item-details">
+        <span class="cart-item-name">${item.name}</span>
+        <span class="cart-item-price">₱${item.price.toFixed(2)}</span>
+      </div>
+      <div class="quantity-controls">
+        <button onclick="decreaseCartItem(${index})">-</button>
+        <span>${item.quantity}</span>
+        <button onclick="increaseCartItem(${index})">+</button>
+      </div>
+      <span class="cart-item-total">₱${(item.price * item.quantity).toFixed(2)}</span>
+    `;
+    cartItemsContainer.appendChild(cartListItem);
+  });
+
+  // Update the total price in the cart
+  cartTotalPrice.textContent = `₱${total.toFixed(2)}`;
+}
+
+// Increase Cart Item Quantity
+function increaseCartItem(index) {
+  cart[index].quantity++;
+  updateCart();
+}
+
+// Decrease Cart Item Quantity
+function decreaseCartItem(index) {
+  if (cart[index].quantity > 1) {
+    cart[index].quantity--;
+  } else {
+    if (confirm(`Remove ${cart[index].name} from the cart?`)) {
+      cart.splice(index, 1); // Remove item if quantity is 0
+    }
+  }
+  updateCart();
+}
+
+function updateCart() {
+  cartItemsContainer.innerHTML = ""; // Clear existing cart items
+  let total = 0;
+
+  // Check if the cart is empty
+  if (cart.length === 0) {
+    cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
+    cartTotalPrice.textContent = "₱0.00";
+    return;
+  }
+
+  // Create a list container for cart items
+  const cartList = document.createElement("ul");
+  cartList.classList.add("cart-list");
+
+  // Loop through the cart items and create list items
+  cart.forEach((item, index) => {
+    total += item.price * item.quantity;
+
+    const cartListItem = document.createElement("li");
+    cartListItem.classList.add("cart-list-item");
+    cartListItem.innerHTML = `
+      <div class="cart-item-image">
+        <img src="${item.name}" alt="${item.name}" />
+      </div>
+      <div class="cart-item-details">
+        <span class="cart-item-name">${item.name}</span>
+        <span class="cart-item-price">₱${item.price.toFixed(2)}</span>
+      </div>
+      <div class="quantity-controls">
+        <button onclick="decreaseCartItem(${index})">-</button>
+        <span>${item.quantity}</span>
+        <button onclick="increaseCartItem(${index})">+</button>
+      </div>
+      <span class="cart-item-total">₱${(item.price * item.quantity).toFixed(2)}</span>
+    `;
+    cartList.appendChild(cartListItem);
+  });
+
+  cartItemsContainer.appendChild(cartList); // Append the list to the cart container
+
+  // Update the total price in the cart
+  cartTotalPrice.textContent = `₱${total.toFixed(2)}`;
+}
+function addToCart(item) {
+  const existingItem = cart.find((cartItem) => cartItem.name === item.name);
+
+  if (existingItem) {
+    existingItem.quantity += 1; // Increase quantity if item already exists
+  } else {
+    cart.push({
+      name: item.name,
+      price: parseFloat(item.price.replace("php", "")), // Parse price as a number
+      image: item.bgImage, // Add the image from data.js
+      quantity: 1, // Default quantity
+    });
+  }
+
+  updateCart(); // Update the cart display
+}
+

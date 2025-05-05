@@ -24,6 +24,7 @@
         <div class="item green" data-body="green-body">Coffee</div>
         <div class="item yellow" data-body="yellow-body">Frappe</div>
         <div class="item violet" data-body="violet-body">Smoothies</div>
+        <div class="item cart" data-body="cart-body">Cart</div> <!-- New Cart Button -->
       </div>
 
       <!-- Main Body -->
@@ -44,6 +45,16 @@
         <div id="violet-body" class="main-body">
           <!-- Subsection grids will be dynamically created here -->
         </div>
+        <div id="cart-body" class="main-body">
+          <!-- New Cart Main Body -->
+          <h2>Your Cart</h2>
+          <div id="cart-items"></div>
+          <div class="total-price">
+            <span>Total: </span>
+            <span id="cart-total-price">₱0.00</span>
+            <button id="checkout-button" class="checkout-button">Checkout</button>
+          </div>
+        </div>
       </div>
       <!-- Right Bar -->
       <div class="right-bar">
@@ -57,24 +68,23 @@
             <span id="quantity">1</span>
             <button id="increase-quantity">+</button>
           </div>
-
           <!-- Add-Ons Section -->
           <div class="add-ons">
             <h3>Add-Ons</h3>
             <div class="add-on">
-              <span>Pearl</span>
+              <span class="add-on-name">Pearl</span>
               <button class="add-on-decrease" data-add-on="pearl">-</button>
               <span id="pearl-count">0</span>
               <button class="add-on-increase" data-add-on="pearl">+</button>
             </div>
             <div class="add-on">
-              <span>Nata</span>
+              <span class="add-on-name">Nata</span>
               <button class="add-on-decrease" data-add-on="nata">-</button>
               <span id="nata-count">0</span>
               <button class="add-on-increase" data-add-on="nata">+</button>
             </div>
             <div class="add-on">
-              <span>Coffee Jelly</span>
+              <span class="add-on-name">Coffee Jelly</span>
               <button class="add-on-decrease" data-add-on="coffee-jelly">
                 -
               </button>
@@ -84,7 +94,7 @@
               </button>
             </div>
             <div class="add-on">
-              <span>Espresso</span>
+              <span class="add-on-name">Espresso</span>
               <button class="add-on-decrease" data-add-on="espresso">-</button>
               <span id="espresso-count">0</span>
               <button class="add-on-increase" data-add-on="espresso">+</button>
@@ -113,6 +123,7 @@
             <span id="total-price">₱0.00</span>
           </div>
           <div class="action-buttons">
+            <button id="add-to-cart">Add to Cart</button> <!-- New Add to Cart Button -->
             <button id="order-now">Order Now</button>
           </div>
         </div>
@@ -122,3 +133,4 @@
     <script src="script.js"></script>
   </body>
 </html>
+
