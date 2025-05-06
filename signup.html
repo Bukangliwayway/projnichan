@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: url("background.png") no-repeat center center/cover;
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .signup-container {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        width: 350px;
+      }
+      .signup-container input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .signup-container button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .signup-container button:hover {
+        background-color: #0056b3;
+      }
+      .password-strength {
+        text-align: left;
+        font-size: 14px;
+        margin-top: -5px;
+        margin-bottom: 10px;
+      }
+      .password-strength span {
+        font-weight: bold;
+      }
+      .notification {
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        display: none;
+        z-index: 1000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="notification" id="notification">You Have Successfully Created an Account</div>
+    <div class="signup-container">
+      <h2>Sign Up</h2>
+      <form id="signup-form" onsubmit="return handleSignUp(event)">
+        <input type="text" id="name" placeholder="Name" required />
+        <input type="text" id="contact" placeholder="Email or Phone Number" required />
+        <input type="text" id="username" placeholder="Username" required />
+        <div>
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            oninput="checkPasswordStrength()"
+            required
+          />
+          <div class="password-strength" id="password-strength">Strength: <span>Weak</span></div>
+        </div>
+        <input
+          type="password"
+          id="confirm-password"
+          placeholder="Confirm Password"
+          oninput="checkPasswordMatch()"
+          required
+        />
+        <div class="password-strength" id="password-match"></div>
+        <button type="submit">Sign Up</button>
+      </form>
+    </div>
+    <script>
+      // Check password strength
+      function checkPasswordStrength() {
+        const password = document.getElementById("password").value;
+        const strengthIndicator = document.getElementById("password-strength").querySelector("span");
+        if (password.length < 6) {
+          strengthIndicator.textContent = "Weak";
+          strengthIndicator.style.color = "red";
+        } else if (password.length < 10) {
+          strengthIndicator.textContent = "Medium";
+          strengthIndicator.style.color = "orange";
+        } else {
+          strengthIndicator.textContent = "Strong";
+          strengthIndicator.style.color = "green";
+        }
+      }
+
+      // Check if passwords match
+      function checkPasswordMatch() {
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirm-password").value;
+        const matchIndicator = document.getElementById("password-match");
+        if (confirmPassword === "") {
+          matchIndicator.textContent = "";
+        } else if (password === confirmPassword) {
+          matchIndicator.textContent = "Passwords match";
+          matchIndicator.style.color = "green";
+        } else {
+          matchIndicator.textContent = "Passwords do not match";
+          matchIndicator.style.color = "red";
+        }
+      }
+
+      // Handle Sign Up
+      function handleSignUp(event) {
+        event.preventDefault();
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirm-password").value;
+
+        if (password !== confirmPassword) {
+          alert("Passwords do not match. Please try again.");
+          return false;
+        }
+
+        // Show notification
+        const notification = document.getElementById("notification");
+        notification.style.display = "block";
+
+        // Redirect to login page after 2 seconds
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 2000);
+
+        return false;
+      }
+    </script>
+  </body>
+</html>

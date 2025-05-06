@@ -7,6 +7,9 @@ document
       window.location.href = "index.html";
     }
   });
+  function goToLoginPage() {
+    window.location.href = "index.html"; // Replace "index.html" with the login page URL
+  }
 
 let searchTerm = "";
 
@@ -374,7 +377,6 @@ const cart = [];
 const cartItemsContainer = document.getElementById("cart-items");
 const cartTotalPrice = document.getElementById("cart-total-price");
 
-// Add to Cart Button Functionality
 document.getElementById("add-to-cart").addEventListener("click", () => {
   if (!selectedItem) {
     alert("Please select an item first!");
@@ -383,122 +385,279 @@ document.getElementById("add-to-cart").addEventListener("click", () => {
 
   const itemName = selectedItem.name;
   const itemPrice = parseFloat(selectedItem.price.replace("₱", ""));
-  const itemImage = selectedItem.image; // Get the image URL from the selected item
+  const itemImage = selectedItem.bgImage;
   const quantity = parseInt(document.getElementById("quantity").textContent);
-
-  // Check if the item already exists in the cart
-  const existingItem = cart.find((item) => item.name === itemName);
-  if (existingItem) {
-    existingItem.quantity += quantity; // Update quantity if item exists
-  } else {
-    cart.push({ name: itemName, price: itemPrice, image: itemImage, quantity }); // Add new item to cart
+  
+  // Collect selected add-ons
+  const selectedAddOns = [];
+  for (const [addOn, count] of Object.entries(addOnCounts)) {
+    if (count > 0) {
+      selectedAddOns.push({
+        name: addOn,
+        quantity: count,
+        price: addOnPrices[addOn]
+      });
+    }
   }
 
-  updateCart(); // Update the cart display
+  // Calculate total price including add-ons
+  const addOnsTotal = selectedAddOns.reduce((sum, addon) => {
+    return sum + (addon.price * addon.quantity);
+  }, 0);
+
+  const existingItem = cart.find(item => 
+    item.name === itemName && 
+    JSON.stringify(item.addOns) === JSON.stringify(selectedAddOns)
+  );
+
+  if (existingItem) {
+    existingItem.quantity += quantity;
+  } else {
+    cart.push({
+      name: itemName,
+      price: itemPrice,
+      image: itemImage,
+      quantity: quantity,
+      addOns: selectedAddOns,
+      basePrice: itemPrice,
+      totalPrice: itemPrice + addOnsTotal
+    });
+  }
+
+  updateCart();
+  resetAddOns(); // Reset add-on counts after adding to cart
 });
 
-// Update Cart Display
+// Update the updateCart function to include add-ons
 function updateCart() {
-  cartItemsContainer.innerHTML = ""; // Clear existing cart items
+  cartItemsContainer.innerHTML = "";
   let total = 0;
 
-  // Check if the cart is empty
   if (cart.length === 0) {
     cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
     cartTotalPrice.textContent = "₱0.00";
     return;
   }
 
-  // Loop through the cart items and create HTML for each item
   cart.forEach((item, index) => {
-    total += item.price * item.quantity;
+    const itemTotal = item.totalPrice * item.quantity;
+    total += itemTotal;
 
     const cartListItem = document.createElement("div");
     cartListItem.classList.add("cart-list-item");
+    
+    // Create add-ons HTML if there are any
+    const addOnsHTML = item.addOns.length > 0 
+      ? `<div class="cart-item-addons">
+          ${item.addOns.map(addon => `
+            <div class="addon-item">
+              <span>${addon.name}: ${addon.quantity}x (₱${addon.price})</span>
+            </div>
+          `).join('')}
+        </div>`
+      : '';
+
     cartListItem.innerHTML = `
       <div class="cart-item-image">
         <img src="${item.image}" alt="${item.name}" />
       </div>
       <div class="cart-item-details">
         <span class="cart-item-name">${item.name}</span>
-        <span class="cart-item-price">₱${item.price.toFixed(2)}</span>
+        <span class="cart-item-price">₱${item.basePrice.toFixed(2)}</span>
+        ${addOnsHTML}
       </div>
       <div class="quantity-controls">
         <button onclick="decreaseCartItem(${index})">-</button>
         <span>${item.quantity}</span>
         <button onclick="increaseCartItem(${index})">+</button>
       </div>
-      <span class="cart-item-total">₱${(item.price * item.quantity).toFixed(2)}</span>
+      <span class="cart-item-total">₱${itemTotal.toFixed(2)}</span>
     `;
+
+    
     cartItemsContainer.appendChild(cartListItem);
   });
 
-  // Update the total price in the cart
+   // Add checkout button after cart items
+   cartItemsContainer.innerHTML += `
+   <div class="cart-checkout">
+     <button id="checkout-button" ${cart.length === 0 ? 'disabled' : ''}>
+       Checkout
+     </button>
+   </div>
+ `;
+
   cartTotalPrice.textContent = `₱${total.toFixed(2)}`;
+
+
+  // Add checkout button event listener
+  const checkoutButton = document.getElementById('checkout-button');
+  if (checkoutButton) {
+    checkoutButton.addEventListener('click', handleCheckout);
+  }
 }
 
-// Increase Cart Item Quantity
+// Add these new functions for checkout handling
+function handleCheckout() {
+  if (cart.length === 0) return;
+
+  const orderData = {
+    items: cart,
+    totalAmount: cart.reduce((sum, item) => sum + (item.totalPrice * item.quantity), 0),
+    date: new Date().toISOString()
+  };
+
+  // Create receipt window
+  const receiptWindow = window.open('', '_blank');
+  receiptWindow.document.write(generateReceiptHTML(orderData));
+  
+  // Clear cart after successful checkout
+  cart.length = 0;
+  updateCart();
+}
+
+function generateReceiptHTML(orderData) {
+  const date = new Date(orderData.date);
+  const formattedDate = date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  const refNumber = 'REF #: ' + Math.floor(Math.random() * 9000000000 + 1000000000);
+
+  const receiptURL = URL.createObjectURL(new Blob([`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Order Receipt</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          max-width: 800px;
+          margin: 20px auto;
+          padding: 20px;
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .receipt-header {
+          text-align: center;
+          border-bottom: 2px solid #333;
+          padding-bottom: 10px;
+          margin-bottom: 20px;
+        }
+        .receipt-item {
+          margin-bottom: 15px;
+          padding: 10px;
+          border-bottom: 1px solid #eee;
+        }
+        .addon-item {
+          margin-left: 20px;
+          color: #666;
+          font-size: 0.9em;
+        }
+        .receipt-total {
+          margin-top: 20px;
+          border-top: 2px solid #333;
+          padding-top: 10px;
+          text-align: right;
+          font-weight: bold;
+        }
+        .reference-number {
+          text-align: center;
+          font-family: monospace;
+          font-size: 1.1em;
+          margin: 10px 0;
+          color: #333;
+          font-weight: bold;
+        }
+        .print-button {
+          display: block;
+          margin: 20px auto;
+          padding: 10px 20px;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+        .print-button:hover {
+          background-color: #45a049;
+        }
+        @media print {
+          .print-button {
+            display: none;
+          }
+          body {
+            box-shadow: none;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="receipt-header">
+        <h1>Order Receipt</h1>
+        <p>${formattedDate}</p>
+        <p class="reference-number">${refNumber}</p>
+      </div>
+      
+      ${orderData.items.map(item => `
+        <div class="receipt-item">
+          <h3>${item.name} x${item.quantity}</h3>
+          <div>Base Price: Php ${item.basePrice.toFixed(2)}</div>
+          ${item.addOns.length > 0 ? 
+            item.addOns.map(addon => `
+              <div class="addon-item">
+                - ${addon.name}: ${addon.quantity}x (Php ${addon.price})
+              </div>
+            `).join('') : ''
+          }
+          <div>Item Total: Php ${(item.totalPrice * item.quantity).toFixed(2)}</div>
+        </div>
+      `).join('')}
+      
+      <div class="receipt-total">
+        Total Amount: Php ${orderData.totalAmount.toFixed(2)}
+      </div>
+
+      <button class="print-button" onclick="window.print()">Print Receipt</button>
+    </body>
+    </html>
+  `], { type: 'text/html' }));
+
+  // Open in new tab and revoke URL after loading
+  const newTab = window.open(receiptURL, '_blank');
+  newTab.onload = () => {
+    URL.revokeObjectURL(receiptURL);
+  };
+}
+
+// Reset add-on counts
+function resetAddOns() {
+  for (const addOn in addOnCounts) {
+    addOnCounts[addOn] = 0;
+    document.getElementById(`${addOn}-count`).textContent = '0';
+  }
+}
+
+// Update the increase/decrease cart item functions
 function increaseCartItem(index) {
   cart[index].quantity++;
   updateCart();
 }
 
-// Decrease Cart Item Quantity
 function decreaseCartItem(index) {
   if (cart[index].quantity > 1) {
     cart[index].quantity--;
   } else {
     if (confirm(`Remove ${cart[index].name} from the cart?`)) {
-      cart.splice(index, 1); // Remove item if quantity is 0
+      cart.splice(index, 1);
     }
   }
   updateCart();
 }
 
-function updateCart() {
-  cartItemsContainer.innerHTML = ""; // Clear existing cart items
-  let total = 0;
 
-  // Check if the cart is empty
-  if (cart.length === 0) {
-    cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
-    cartTotalPrice.textContent = "₱0.00";
-    return;
-  }
-
-  // Create a list container for cart items
-  const cartList = document.createElement("ul");
-  cartList.classList.add("cart-list");
-
-  // Loop through the cart items and create list items
-  cart.forEach((item, index) => {
-    total += item.price * item.quantity;
-
-    const cartListItem = document.createElement("li");
-    cartListItem.classList.add("cart-list-item");
-    cartListItem.innerHTML = `
-      <div class="cart-item-image">
-        <img src="${item.name}" alt="${item.name}" />
-      </div>
-      <div class="cart-item-details">
-        <span class="cart-item-name">${item.name}</span>
-        <span class="cart-item-price">₱${item.price.toFixed(2)}</span>
-      </div>
-      <div class="quantity-controls">
-        <button onclick="decreaseCartItem(${index})">-</button>
-        <span>${item.quantity}</span>
-        <button onclick="increaseCartItem(${index})">+</button>
-      </div>
-      <span class="cart-item-total">₱${(item.price * item.quantity).toFixed(2)}</span>
-    `;
-    cartList.appendChild(cartListItem);
-  });
-
-  cartItemsContainer.appendChild(cartList); // Append the list to the cart container
-
-  // Update the total price in the cart
-  cartTotalPrice.textContent = `₱${total.toFixed(2)}`;
-}
 function addToCart(item) {
   const existingItem = cart.find((cartItem) => cartItem.name === item.name);
 
