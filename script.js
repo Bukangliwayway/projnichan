@@ -376,13 +376,39 @@ document.addEventListener("DOMContentLoaded", function () {
 const cart = [];
 const cartItemsContainer = document.getElementById("cart-items");
 const cartTotalPrice = document.getElementById("cart-total-price");
-
 document.getElementById("add-to-cart").addEventListener("click", () => {
   if (!selectedItem) {
     alert("Please select an item first!");
     return;
   }
 
+  // Get source and target positions
+  const sourceElement = document.querySelector(".right-bar-image");
+  const targetElement = document.querySelector("#cart-items");
+  const sourceRect = sourceElement.getBoundingClientRect();
+  const targetRect = targetElement.getBoundingClientRect();
+
+  // Create floating image
+  const floatingImage = document.createElement("div");
+  floatingImage.className = "floating-image";
+  floatingImage.style.backgroundImage = `url(${selectedItem.bgImage})`;
+  
+  // Set initial position
+  floatingImage.style.top = `${sourceRect.top}px`;
+  floatingImage.style.left = `${sourceRect.left}px`;
+  document.body.appendChild(floatingImage);
+
+  // Trigger animation
+  requestAnimationFrame(() => {
+    floatingImage.style.top = `${targetRect.top + 10}px`;
+    floatingImage.style.left = `${targetRect.left + 10}px`;
+    floatingImage.classList.add("fade");
+  });
+
+  // Remove element after animation
+  setTimeout(() => {
+    floatingImage.remove();
+  }, 600);
   const itemName = selectedItem.name;
   const itemPrice = parseFloat(selectedItem.price.replace("₱", ""));
   const itemImage = selectedItem.bgImage;
@@ -448,40 +474,54 @@ function updateCart() {
     
     // Create add-ons HTML if there are any
     const addOnsHTML = item.addOns.length > 0 
-      ? `<div class="cart-item-addons">
-          ${item.addOns.map(addon => `
-            <div class="addon-item">
-              <span>${addon.name}: ${addon.quantity}x (₱${addon.price})</span>
-            </div>
-          `).join('')}
-        </div>`
-      : '';
+    ? `<div class="cart-item-addons" style="font-size: 0.85em; color: #666;">
+        ${item.addOns.map(addon => `
+          <div class="addon-item">
+            <span>${addon.name}: ${addon.quantity}x (₱${addon.price})</span>
+          </div>
+        `).join('')}
+      </div>`
+    : '';
+  
+  cartListItem.innerHTML = `
+    <div class="cart-item-image">
+      <img src="${item.image}" alt="${item.name}" />
+    </div>
+    <div class="cart-item-details">
+      <span class="cart-item-name" style="font-size: 1.0em; font-weight: bold;">${item.name}</span>
+      <span class="cart-item-price" style="font-size: 1.1em;">₱${item.basePrice.toFixed(2)}</span>
+      ${addOnsHTML}
+    </div>
+    <div class="quantity-controls">
+      <button onclick="decreaseCartItem(${index})">-</button>
+      <span>${item.quantity}</span>
+      <button onclick="increaseCartItem(${index})">+</button>
+    </div>
+    <span class="cart-item-total" style="font-size: 1.1em; font-weight: bold;">₱${itemTotal.toFixed(2)}</span>
+  `;
 
-    cartListItem.innerHTML = `
-      <div class="cart-item-image">
-        <img src="${item.image}" alt="${item.name}" />
-      </div>
-      <div class="cart-item-details">
-        <span class="cart-item-name">${item.name}</span>
-        <span class="cart-item-price">₱${item.basePrice.toFixed(2)}</span>
-        ${addOnsHTML}
-      </div>
-      <div class="quantity-controls">
-        <button onclick="decreaseCartItem(${index})">-</button>
-        <span>${item.quantity}</span>
-        <button onclick="increaseCartItem(${index})">+</button>
-      </div>
-      <span class="cart-item-total">₱${itemTotal.toFixed(2)}</span>
-    `;
-
-    
+          
     cartItemsContainer.appendChild(cartListItem);
   });
 
    // Add checkout button after cart items
    cartItemsContainer.innerHTML += `
    <div class="cart-checkout">
-     <button id="checkout-button" ${cart.length === 0 ? 'disabled' : ''}>
+     <button id="checkout-button" ${cart.length === 0 ? 'disabled' : ''}
+             style="
+          font-size: 1.2em;
+          padding: 5px 0px;
+          width: 15%;
+          margin: 25px auto;
+          display: block;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        "
+        >
        Checkout
      </button>
    </div>
