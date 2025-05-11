@@ -1,0 +1,101 @@
+{
+  "daily": {
+    "totalOrders": {
+      "value": "147",
+      "trend": "up",
+      "percentage": "12",
+      "comparison": "yesterday"
+    },
+    "revenue": {
+      "value": "15240",
+      "trend": "up",
+      "percentage": "8",
+      "comparison": "yesterday"
+    },
+    "popularItem": {
+      "name": "Taro",
+      "orders": "42"
+    },
+    "averageOrder": {
+      "value": "180",
+      "trend": "down",
+      "percentage": "3",
+      "comparison": "last week"
+    },
+    "salesData": [12450, 15200, 9800, 17300, 14600, 18900, 13800],
+    "categorySales": {
+      "percentage": 65,
+      "distribution": {
+        "Milktea": 65,
+        "Coffee": 20,
+        "Others": 15
+      }
+    }
+  },
+  "weekly": {
+    "totalOrders": {
+      "value": "1047",
+      "trend": "up",
+      "percentage": "15",
+      "comparison": "last week"
+    },
+    "revenue": {
+      "value": "89450",
+      "trend": "up",
+      "percentage": "10",
+      "comparison": "last week"
+    },
+    "popularItem": {
+      "name": "Classic Milk Tea",
+      "orders": "287"
+    },
+    "averageOrder": {
+      "value": "195",
+      "trend": "up",
+      "percentage": "5",
+      "comparison": "last month"
+    },
+    "salesData": [85400, 92300, 88700, 95600, 89900, 93200, 89450],
+    "categorySales": {
+      "percentage": 70,
+      "distribution": {
+        "Milktea": 70,
+        "Coffee": 18,
+        "Others": 12
+      }
+    }
+  },
+  "annually": {
+    "totalOrders": {
+      "value": "52890",
+      "trend": "up",
+      "percentage": "25",
+      "comparison": "last year"
+    },
+    "revenue": {
+      "value": "4582340",
+      "trend": "up",
+      "percentage": "20",
+      "comparison": "last year"
+    },
+    "popularItem": {
+      "name": "Winter Melon",
+      "orders": "15478"
+    },
+    "averageOrder": {
+      "value": "210",
+      "trend": "up",
+      "percentage": "8",
+      "comparison": "last year"
+    },
+    "salesData": [3850000, 4100000, 4300000, 4580000, 4620000, 4582340],
+    "categorySales": {
+      "percentage": 60,
+      "distribution": {
+        "Milktea": 60,
+        "Coffee": 25,
+        "Others": 15
+      }
+    }
+  }
+}

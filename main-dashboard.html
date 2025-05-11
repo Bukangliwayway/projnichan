@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Main Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background-color: #f5f5f5;
+      }
+
+      .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .chart-title {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+      }
+
+      .chart {
+        height: 300px;
+        display: flex;
+        align-items: flex-end;
+        gap: 12px;
+        padding: 20px 0;
+        border-bottom: 2px solid #eeb661;
+      }
+
+      .bar {
+        flex: 1;
+        background: linear-gradient(to top, #eeb661, #ffd700);
+        border-radius: 8px 8px 0 0;
+        position: relative;
+        transition: height 0.3s ease;
+      }
+
+      .bar::after {
+        content: attr(data-value);
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.875rem;
+        color: #333;
+        font-weight: 500;
+      }
+
+      .analytics-container {
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin: 2rem;
+      }
+
+      .metric-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.2s ease;
+      }
+
+      .metric-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .metric-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #eeb661;
+        margin: 0.5rem 0;
+      }
+
+      .metric-label {
+        color: #333;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 600;
+      }
+
+      .trend-up {
+        color: #22c55e;
+        font-weight: 500;
+      }
+
+      .trend-down {
+        color: #ef4444;
+        font-weight: 500;
+      }
+
+      .pie-charts-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin: 2rem;
+      }
+
+      .pie-chart-wrapper {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.2s ease;
+      }
+
+      .pie-chart-wrapper:hover {
+        transform: translateY(-5px);
+      }
+
+      .pie-chart-title {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+      }
+
+      .pie-chart {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: conic-gradient(var(--c) calc(var(--p) * 1%), #eee 0);
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .pie-chart span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #333;
+      }
+
+      .pie-legend {
+        margin-top: 1.5rem;
+        text-align: left;
+        color: #555;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+
+      .pie-legend div {
+        margin: 0.75rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .chart-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+        padding: 0 8px;
+      }
+
+      .chart-label {
+        font-size: 0.875rem;
+        color: #555;
+        font-weight: 500;
+      }
+
+      /* Update the navbar colors to match theme */
+      .navbar {
+        background-color: #333;
+        color: white;
+        font-family: "Poppins", sans-serif;
+      }
+
+      .logout-button {
+        background-color: #f80303;
+        color: #fff;
+      }
+
+      .logout-button:hover {
+        background-color: #eeb661;
+        color: #fff;
+        border-color: #fff;
+      }
+      .floating-buttons {
+        position: fixed;
+        left: 2rem;
+        bottom: 2rem;
+        display: flex;
+        gap: 1rem;
+        z-index: 1000;
+      }
+
+      .time-button {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 500;
+        font-size: 0.875rem;
+        background-color: #333;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .time-button.active {
+        background-color: #eeb661;
+        color: #333;
+      }
+
+      .time-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .export-button {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 500;
+        font-size: 0.875rem;
+        background-color: #eeb661;
+        color: #333;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-left: 1rem;
+      }
+
+      .export-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background-color: #ffd700;
+      }
+
+      .export-button svg {
+        transition: transform 0.3s ease;
+      }
+
+      .export-button:hover svg {
+        transform: translateY(2px);
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <div class="navbar">
+      <div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.25"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-coffee"
+        >
+          <path d="M10 2v2" />
+          <path d="M14 2v2" />
+          <path
+            d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"
+          />
+          <path d="M6 2v2" />
+        </svg>
+        Peppermint
+      </div>
+      <div class="menu">
+        <div>
+          <a
+            href="admin-dashboard.html"
+            style="text-decoration: none; color: inherit"
+            >Menu</a
+          >
+        </div>
+        <a id="logout-button" class="logout-button" href="#">Logout</a>
+      </div>
+    </div>
+    <div class="analytics-container">
+      <div class="metric-card">
+        <div class="metric-label">Total Orders Today</div>
+        <div class="metric-value">147</div>
+        <div class="trend-up">↑ 12% from yesterday</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Revenue Today</div>
+        <div class="metric-value">₱15,240</div>
+        <div class="trend-up">↑ 8% from yesterday</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Most Popular Item</div>
+        <div class="metric-value">Taro</div>
+        <div class="trend-up">42 orders today</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Average Order Value</div>
+        <div class="metric-value">₱180</div>
+        <div class="trend-down">↓ 3% from last week</div>
+      </div>
+    </div>
+    <div class="chart-container">
+      <div class="chart-title">Sales Trend</div>
+      <div class="chart">
+        <div class="bar" style="height: 60%" data-value="₱12,450"></div>
+        <div class="bar" style="height: 75%" data-value="₱15,200"></div>
+        <div class="bar" style="height: 45%" data-value="₱9,800"></div>
+        <div class="bar" style="height: 85%" data-value="₱17,300"></div>
+        <div class="bar" style="height: 70%" data-value="₱14,600"></div>
+        <div class="bar" style="height: 90%" data-value="₱18,900"></div>
+        <div class="bar" style="height: 65%" data-value="₱13,800"></div>
+      </div>
+      <div class="chart-labels">
+        <span class="chart-label">Mon</span>
+        <span class="chart-label">Tue</span>
+        <span class="chart-label">Wed</span>
+        <span class="chart-label">Thu</span>
+        <span class="chart-label">Fri</span>
+        <span class="chart-label">Sat</span>
+        <span class="chart-label">Sun</span>
+      </div>
+    </div>
+    <div class="pie-charts-container">
+      <div class="pie-chart-wrapper">
+        <div class="pie-chart-title">Sales by Category</div>
+        <div class="pie-chart" style="--p: 65; --c: #2563eb; --b: 10px">
+          <span>65%</span>
+        </div>
+        <div class="pie-legend">
+          <div>Milktea: 65%</div>
+          <div>Coffee: 20%</div>
+          <div>Others: 15%</div>
+        </div>
+      </div>
+
+      <div class="pie-chart-wrapper">
+        <div class="pie-chart-title">Payment Methods</div>
+        <div class="pie-chart" style="--p: 45; --c: #10b981; --b: 10px">
+          <span>45%</span>
+        </div>
+        <div class="pie-legend">
+          <div>Cash: 45%</div>
+          <div>GCash: 35%</div>
+          <div>Card: 20%</div>
+        </div>
+      </div>
+
+      <div class="pie-chart-wrapper">
+        <div class="pie-chart-title">Order Types</div>
+        <div class="pie-chart" style="--p: 70; --c: #6366f1; --b: 10px">
+          <span>70%</span>
+        </div>
+        <div class="pie-legend">
+          <div>Dine-in: 70%</div>
+          <div>Take-out: 30%</div>
+        </div>
+      </div>
+    </div>
+    <div class="floating-buttons">
+      <button class="time-button active" data-time="daily">Daily</button>
+      <button class="time-button" data-time="weekly">Weekly</button>
+      <button class="time-button" data-time="annually">Annually</button>
+      <button class="export-button" id="exportButton" style="display: none">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+        Export
+      </button>
+    </div>
+  </body>
+  <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const response = await fetch("dashboard-data.json");
+      const data = await response.json();
+
+      const buttons = document.querySelectorAll(".time-button");
+      const defaultView = "daily";
+
+      function updateDashboard(timeframe) {
+        const timeData = data[timeframe];
+
+        // Update metrics
+        document.querySelector(
+          ".metric-card:nth-child(1) .metric-value"
+        ).textContent = timeData.totalOrders.value;
+        document.querySelector(
+          ".metric-card:nth-child(1) .trend-up"
+        ).textContent = `${timeData.totalOrders.trend === "up" ? "↑" : "↓"} ${
+          timeData.totalOrders.percentage
+        }% from ${timeData.totalOrders.comparison}`;
+
+        document.querySelector(
+          ".metric-card:nth-child(2) .metric-value"
+        ).textContent = `₱${timeData.revenue.value}`;
+        document.querySelector(
+          ".metric-card:nth-child(2) .trend-up"
+        ).textContent = `${timeData.revenue.trend === "up" ? "↑" : "↓"} ${
+          timeData.revenue.percentage
+        }% from ${timeData.revenue.comparison}`;
+
+        document.querySelector(
+          ".metric-card:nth-child(3) .metric-value"
+        ).textContent = timeData.popularItem.name;
+        document.querySelector(
+          ".metric-card:nth-child(3) .trend-up"
+        ).textContent = `${timeData.popularItem.orders} orders ${
+          timeframe === "daily"
+            ? "today"
+            : timeframe === "weekly"
+            ? "this week"
+            : "this year"
+        }`;
+
+        // Update chart data
+        const bars = document.querySelectorAll(".bar");
+        timeData.salesData.forEach((value, index) => {
+          if (bars[index]) {
+            const maxValue = Math.max(...timeData.salesData);
+            const percentage = (value / maxValue) * 100;
+            bars[index].style.height = `${percentage}%`;
+            bars[index].setAttribute("data-value", `₱${value}`);
+          }
+        });
+
+        // Update category distribution
+        const pieChart = document.querySelector(".pie-chart");
+        pieChart.style.setProperty("--p", timeData.categorySales.percentage);
+
+        const distribution = timeData.categorySales.distribution;
+        const legend = document.querySelector(".pie-legend");
+        legend.innerHTML = Object.entries(distribution)
+          .map(([category, value]) => `<div>${category}: ${value}%</div>`)
+          .join("");
+      }
+      const exportButton = document.getElementById("exportButton");
+
+      function showExportButton(timeframe) {
+        exportButton.style.display = "flex";
+        exportButton.onclick = () => exportData(timeframe);
+      }
+
+      function exportData(timeframe) {
+        const timeData = data[timeframe];
+
+        // Prepare data for export
+        const exportData = [
+          ["Metric", "Value", "Trend", "Change"],
+          [
+            "Total Orders",
+            timeData.totalOrders.value,
+            timeData.totalOrders.trend,
+            `${timeData.totalOrders.percentage}% from ${timeData.totalOrders.comparison}`,
+          ],
+          [
+            "Revenue",
+            `₱${timeData.revenue.value}`,
+            timeData.revenue.trend,
+            `${timeData.revenue.percentage}% from ${timeData.revenue.comparison}`,
+          ],
+          [
+            "Most Popular Item",
+            timeData.popularItem.name,
+            "",
+            `${timeData.popularItem.orders} orders`,
+          ],
+          [
+            "Average Order Value",
+            `₱${timeData.averageOrder.value}`,
+            timeData.averageOrder.trend,
+            `${timeData.averageOrder.percentage}% from ${timeData.averageOrder.comparison}`,
+          ],
+          [],
+          ["Category Distribution"],
+          ["Milktea", `${timeData.categorySales.distribution.Milktea}%`],
+          ["Coffee", `${timeData.categorySales.distribution.Coffee}%`],
+          ["Others", `${timeData.categorySales.distribution.Others}%`],
+        ];
+
+        // Create worksheet
+        const ws = XLSX.utils.aoa_to_sheet(exportData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Dashboard Data");
+
+        // Generate filename based on timeframe
+        const filename = `${
+          timeframe.charAt(0).toUpperCase() + timeframe.slice(1)
+        }_Report.xlsx`;
+
+        // Export file
+        XLSX.writeFile(wb, filename);
+      }
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          buttons.forEach((b) => b.classList.remove("active"));
+          button.classList.add("active");
+          const timeframe = button.dataset.time;
+          updateDashboard(timeframe);
+          showExportButton(timeframe);
+        });
+      });
+
+      // Initialize with daily view
+      updateDashboard(defaultView);
+      showExportButton(defaultView);
+    });
+  </script>
+</html>

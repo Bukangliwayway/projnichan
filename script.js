@@ -7,9 +7,9 @@ document
       window.location.href = "index.html";
     }
   });
-  function goToLoginPage() {
-    window.location.href = "index.html"; // Replace "index.html" with the login page URL
-  }
+function goToLoginPage() {
+  window.location.href = "index.html"; // Replace "index.html" with the login page URL
+}
 
 let searchTerm = "";
 
@@ -257,7 +257,6 @@ document.getElementById("decrease-quantity").addEventListener("click", () => {
   }
 });
 
-
 document.getElementById("order-now").addEventListener("click", () => {
   if (selectedItem) {
     // Gather add-ons information
@@ -328,11 +327,11 @@ function checkLogin(event) {
   event.preventDefault(); // Prevent form submission
 
   // Admin credentials
-  const adminUsername = "admin";
+  const adminUsername = "staff";
   const adminPassword = "12345";
 
   // Staff credentials
-  const staffUsername = "staff";
+  const staffUsername = "admin";
   const staffPassword = "12345";
 
   // Get input values
@@ -341,11 +340,11 @@ function checkLogin(event) {
 
   // Check if credentials match for Admin or Staff
   if (username === adminUsername && password === adminPassword) {
-    // Redirect to Admin Dashboard
-    window.location.href = "admin-dashboard.html";
-  } else if (username === staffUsername && password === staffPassword) {
     // Redirect to Staff Dashboard
     window.location.href = "staff-dashboard.html";
+  } else if (username === staffUsername && password === staffPassword) {
+    // Redirect to Admin Dashboard
+    window.location.href = "admin-dashboard.html";
   } else {
     // Show error message for invalid credentials
     document.getElementById("message").innerText =
@@ -360,13 +359,13 @@ document.addEventListener("DOMContentLoaded", function () {
   // Search functionality that re-triggers grid population
   searchBar.addEventListener("input", function () {
     searchTerm = searchBar.value.trim().toLowerCase();
-  
+
     // Re-populate all grids with filtered data
     populateGrid("blue", "blue-body");
     populateGrid("violet", "violet-body");
     populateGrid("green", "green-body");
     populateGrid("yellow", "yellow-body");
-  
+
     // Re-add click animations
     addClickAnimation();
   });
@@ -392,7 +391,7 @@ document.getElementById("add-to-cart").addEventListener("click", () => {
   const floatingImage = document.createElement("div");
   floatingImage.className = "floating-image";
   floatingImage.style.backgroundImage = `url(${selectedItem.bgImage})`;
-  
+
   // Set initial position
   floatingImage.style.top = `${sourceRect.top}px`;
   floatingImage.style.left = `${sourceRect.left}px`;
@@ -413,7 +412,7 @@ document.getElementById("add-to-cart").addEventListener("click", () => {
   const itemPrice = parseFloat(selectedItem.price.replace("₱", ""));
   const itemImage = selectedItem.bgImage;
   const quantity = parseInt(document.getElementById("quantity").textContent);
-  
+
   // Collect selected add-ons
   const selectedAddOns = [];
   for (const [addOn, count] of Object.entries(addOnCounts)) {
@@ -421,19 +420,20 @@ document.getElementById("add-to-cart").addEventListener("click", () => {
       selectedAddOns.push({
         name: addOn,
         quantity: count,
-        price: addOnPrices[addOn]
+        price: addOnPrices[addOn],
       });
     }
   }
 
   // Calculate total price including add-ons
   const addOnsTotal = selectedAddOns.reduce((sum, addon) => {
-    return sum + (addon.price * addon.quantity);
+    return sum + addon.price * addon.quantity;
   }, 0);
 
-  const existingItem = cart.find(item => 
-    item.name === itemName && 
-    JSON.stringify(item.addOns) === JSON.stringify(selectedAddOns)
+  const existingItem = cart.find(
+    (item) =>
+      item.name === itemName &&
+      JSON.stringify(item.addOns) === JSON.stringify(selectedAddOns)
   );
 
   if (existingItem) {
@@ -446,7 +446,7 @@ document.getElementById("add-to-cart").addEventListener("click", () => {
       quantity: quantity,
       addOns: selectedAddOns,
       basePrice: itemPrice,
-      totalPrice: itemPrice + addOnsTotal
+      totalPrice: itemPrice + addOnsTotal,
     });
   }
 
@@ -471,25 +471,34 @@ function updateCart() {
 
     const cartListItem = document.createElement("div");
     cartListItem.classList.add("cart-list-item");
-    
+
     // Create add-ons HTML if there are any
-    const addOnsHTML = item.addOns.length > 0 
-    ? `<div class="cart-item-addons" style="font-size: 0.85em; color: #666;">
-        ${item.addOns.map(addon => `
+    const addOnsHTML =
+      item.addOns.length > 0
+        ? `<div class="cart-item-addons" style="font-size: 0.85em; color: #666;">
+        ${item.addOns
+          .map(
+            (addon) => `
           <div class="addon-item">
             <span>${addon.name}: ${addon.quantity}x (₱${addon.price})</span>
           </div>
-        `).join('')}
+        `
+          )
+          .join("")}
       </div>`
-    : '';
-  
-  cartListItem.innerHTML = `
+        : "";
+
+    cartListItem.innerHTML = `
     <div class="cart-item-image">
       <img src="${item.image}" alt="${item.name}" />
     </div>
     <div class="cart-item-details">
-      <span class="cart-item-name" style="font-size: 1.0em; font-weight: bold;">${item.name}</span>
-      <span class="cart-item-price" style="font-size: 1.1em;">₱${item.basePrice.toFixed(2)}</span>
+      <span class="cart-item-name" style="font-size: 1.0em; font-weight: bold;">${
+        item.name
+      }</span>
+      <span class="cart-item-price" style="font-size: 1.1em;">₱${item.basePrice.toFixed(
+        2
+      )}</span>
       ${addOnsHTML}
     </div>
     <div class="quantity-controls">
@@ -497,17 +506,18 @@ function updateCart() {
       <span>${item.quantity}</span>
       <button onclick="increaseCartItem(${index})">+</button>
     </div>
-    <span class="cart-item-total" style="font-size: 1.1em; font-weight: bold;">₱${itemTotal.toFixed(2)}</span>
+    <span class="cart-item-total" style="font-size: 1.1em; font-weight: bold;">₱${itemTotal.toFixed(
+      2
+    )}</span>
   `;
 
-          
     cartItemsContainer.appendChild(cartListItem);
   });
 
-   // Add checkout button after cart items
-   cartItemsContainer.innerHTML += `
+  // Add checkout button after cart items
+  cartItemsContainer.innerHTML += `
    <div class="cart-checkout">
-     <button id="checkout-button" ${cart.length === 0 ? 'disabled' : ''}
+     <button id="checkout-button" ${cart.length === 0 ? "disabled" : ""}
              style="
           font-size: 1.2em;
           padding: 5px 0px;
@@ -529,11 +539,10 @@ function updateCart() {
 
   cartTotalPrice.textContent = `₱${total.toFixed(2)}`;
 
-
   // Add checkout button event listener
-  const checkoutButton = document.getElementById('checkout-button');
+  const checkoutButton = document.getElementById("checkout-button");
   if (checkoutButton) {
-    checkoutButton.addEventListener('click', handleCheckout);
+    checkoutButton.addEventListener("click", handleCheckout);
   }
 }
 
@@ -543,14 +552,17 @@ function handleCheckout() {
 
   const orderData = {
     items: cart,
-    totalAmount: cart.reduce((sum, item) => sum + (item.totalPrice * item.quantity), 0),
-    date: new Date().toISOString()
+    totalAmount: cart.reduce(
+      (sum, item) => sum + item.totalPrice * item.quantity,
+      0
+    ),
+    date: new Date().toISOString(),
   };
 
   // Create receipt window
-  const receiptWindow = window.open('', '_blank');
+  const receiptWindow = window.open("", "_blank");
   receiptWindow.document.write(generateReceiptHTML(orderData));
-  
+
   // Clear cart after successful checkout
   cart.length = 0;
   updateCart();
@@ -558,16 +570,20 @@ function handleCheckout() {
 
 function generateReceiptHTML(orderData) {
   const date = new Date(orderData.date);
-  const formattedDate = date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+  const formattedDate = date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
-  const refNumber = 'REF #: ' + Math.floor(Math.random() * 9000000000 + 1000000000);
+  const refNumber =
+    "REF #: " + Math.floor(Math.random() * 9000000000 + 1000000000);
 
-  const receiptURL = URL.createObjectURL(new Blob([`
+  const receiptURL = URL.createObjectURL(
+    new Blob(
+      [
+        `
     <!DOCTYPE html>
     <html>
     <head>
@@ -641,20 +657,32 @@ function generateReceiptHTML(orderData) {
         <p class="reference-number">${refNumber}</p>
       </div>
       
-      ${orderData.items.map(item => `
+      ${orderData.items
+        .map(
+          (item) => `
         <div class="receipt-item">
           <h3>${item.name} x${item.quantity}</h3>
           <div>Base Price: Php ${item.basePrice.toFixed(2)}</div>
-          ${item.addOns.length > 0 ? 
-            item.addOns.map(addon => `
+          ${
+            item.addOns.length > 0
+              ? item.addOns
+                  .map(
+                    (addon) => `
               <div class="addon-item">
                 - ${addon.name}: ${addon.quantity}x (Php ${addon.price})
               </div>
-            `).join('') : ''
+            `
+                  )
+                  .join("")
+              : ""
           }
-          <div>Item Total: Php ${(item.totalPrice * item.quantity).toFixed(2)}</div>
+          <div>Item Total: Php ${(item.totalPrice * item.quantity).toFixed(
+            2
+          )}</div>
         </div>
-      `).join('')}
+      `
+        )
+        .join("")}
       
       <div class="receipt-total">
         Total Amount: Php ${orderData.totalAmount.toFixed(2)}
@@ -663,10 +691,14 @@ function generateReceiptHTML(orderData) {
       <button class="print-button" onclick="window.print()">Print Receipt</button>
     </body>
     </html>
-  `], { type: 'text/html' }));
+  `,
+      ],
+      { type: "text/html" }
+    )
+  );
 
   // Open in new tab and revoke URL after loading
-  const newTab = window.open(receiptURL, '_blank');
+  const newTab = window.open(receiptURL, "_blank");
   newTab.onload = () => {
     URL.revokeObjectURL(receiptURL);
   };
@@ -676,7 +708,7 @@ function generateReceiptHTML(orderData) {
 function resetAddOns() {
   for (const addOn in addOnCounts) {
     addOnCounts[addOn] = 0;
-    document.getElementById(`${addOn}-count`).textContent = '0';
+    document.getElementById(`${addOn}-count`).textContent = "0";
   }
 }
 
@@ -697,7 +729,6 @@ function decreaseCartItem(index) {
   updateCart();
 }
 
-
 function addToCart(item) {
   const existingItem = cart.find((cartItem) => cartItem.name === item.name);
 
@@ -715,3 +746,132 @@ function addToCart(item) {
   updateCart(); // Update the cart display
 }
 
+// Add product button and modal functionality
+document.addEventListener("DOMContentLoaded", () => {
+  const addButton = document.querySelector(".add-product-button");
+  const modal = document.querySelector(".upload-modal");
+  modal.innerHTML = `
+    <button class="close-button">&times;</button>
+    <div class="modal-header">
+      <h2>New Drinks Upload</h2>
+    </div>
+    <form class="upload-form">
+      <div class="form-group">
+        <label for="drink-name">Name of Drink</label>
+        <input type="text" id="drink-name" required>
+      </div>
+      <div class="form-group">
+        <label for="drink-price">Price (₱)</label>
+        <input type="number" id="drink-price" min="0" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label>Image Upload</label>
+        <div class="file-upload-container" id="file-upload-container">
+          <p>Click to upload or drag and drop</p>
+          <input type="file" id="drink-image" accept="image/*" style="display: none">
+        </div>
+        <img id="image-preview" class="preview-image">
+      </div>
+      <button type="submit">Add Drink</button>
+    </form>
+  `;
+
+  // Add close button event listener
+  const closeButton = modal.querySelector(".close-button");
+  closeButton.addEventListener("click", () => {
+    modal.style.display = "none";
+    overlay.style.display = "none";
+    resetForm();
+  });
+  const overlay = document.querySelector(".modal-overlay");
+  const uploadForm = document.querySelector(".upload-form");
+  const fileUploadContainer = document.getElementById("file-upload-container");
+  const fileInput = document.getElementById("drink-image");
+  const imagePreview = document.getElementById("image-preview");
+
+  // Show modal
+  addButton.addEventListener("click", () => {
+    modal.style.display = "block";
+    overlay.style.display = "block";
+  });
+
+  // Hide modal
+  overlay.addEventListener("click", () => {
+    modal.style.display = "none";
+    overlay.style.display = "none";
+    resetForm();
+  });
+
+  // File upload handling
+  fileUploadContainer.addEventListener("click", () => {
+    fileInput.click();
+  });
+
+  fileUploadContainer.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    fileUploadContainer.style.borderColor = "#4CAF50";
+  });
+
+  fileUploadContainer.addEventListener("dragleave", () => {
+    fileUploadContainer.style.borderColor = "#ddd";
+  });
+
+  fileUploadContainer.addEventListener("drop", (e) => {
+    e.preventDefault();
+    fileUploadContainer.style.borderColor = "#ddd";
+    const file = e.dataTransfer.files[0];
+    handleFile(file);
+  });
+
+  fileInput.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    handleFile(file);
+  });
+
+  function handleFile(file) {
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imagePreview.src = e.target.result;
+        imagePreview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Form submission
+  uploadForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const drinkName = document.getElementById("drink-name").value;
+    const drinkPrice = document.getElementById("drink-price").value;
+    const imageFile = fileInput.files[0];
+
+    if (drinkName && drinkPrice && imageFile) {
+      // Here you would typically send this data to your backend
+      // For now, we'll just add it to the data array
+      const newDrink = {
+        name: drinkName,
+        price: `₱${parseFloat(drinkPrice).toFixed(2)}`,
+        bgImage: URL.createObjectURL(imageFile),
+        section: "blue", // You might want to add a section selector in the form
+        subSection: "new", // You might want to add a subsection selector in the form
+      };
+
+      data.push(newDrink);
+
+      // Refresh the grid
+      populateGrid("blue", "blue-body");
+
+      // Reset and close modal
+      resetForm();
+      modal.style.display = "none";
+      overlay.style.display = "none";
+    }
+  });
+
+  function resetForm() {
+    uploadForm.reset();
+    imagePreview.style.display = "none";
+    imagePreview.src = "";
+  }
+});
